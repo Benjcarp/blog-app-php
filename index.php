@@ -22,8 +22,10 @@
         <div class="content">
             <div class="articles-container">
                 <?php foreach($articles as $article) :  ?>
-                    <div class="article block overflow">
-                        <div class="img-container" style="background-image: url(<?= $article['image'] ?>)"  ></div>
+                    <div class="article block">
+                        <div class="overflow">
+                            <div class="img-container" style="background-image: url(<?= $article['image'] ?>)"  ></div>
+                        </div>
                         <h2><?= $article['title'] ?></h2>
                     </div>
                 <?php endforeach; ?>
