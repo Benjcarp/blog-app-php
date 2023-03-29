@@ -6,6 +6,7 @@
 
     $filename = __DIR__."/data/articles.json";
     $articles = [];
+    $category = '';
 
     if(file_exists($filename)) {
         $articles = json_decode(file_get_contents($filename), true) ?? [];
@@ -17,6 +18,19 @@
         'category' => '',
         'content' => ''
     ];
+
+    $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $idArticle = $_GET['id'] ?? '';
+
+    if($idArticle) {
+        $articleIndex = array_search($idArticle, array_column($articles, 'id'));
+        $article = $articles[$articleIndex];
+
+        $title = $article['title'];
+        $image = $article['image'];
+        $category = $article['category'];
+        $content = $article['content'];
+    }
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_POST = filter_input_array(INPUT_POST, [
@@ -57,16 +71,25 @@
         }
         if(empty(array_filter($errors, fn ($error) => $error !== ''))) {
             // mon formulaire est valide
-            $newArticle = [
-                'title' => $title,
-                'image' => $image,
-                'category' => $category,
-                'content' => $content,
-                'id' => time()
-            ];
 
-            $articles = [...$articles, $newArticle];
+            if($idArticle) {
+                $articles[$articleIndex]['title'] = $title;
+                $articles[$articleIndex]['image'] = $image;
+                $articles[$articleIndex]['category'] = $category;
+                $articles[$articleIndex]['content'] = $content;
+            } else {
+                $newArticle = [
+                    'title' => $title,
+                    'image' => $image,
+                    'category' => $category,
+                    'content' => $content,
+                    'id' => time()
+                ];
+    
+                $articles = [...$articles, $newArticle];
+            }
             file_put_contents($filename, json_encode($articles));
+            header('Location: /');
         }
     }
 
@@ -85,11 +108,11 @@
         <?php require_once "includes/header.php" ?>
         <div class="content">
             <div class="block p-20 form-container">
-                <h1>Ecrire un article</h1>
-                <form action="/add-article.php" method="POST">
+                <h1><?= $idArticle ? 'Editer': 'Ajouter' ?> un article</h1>
+                <form action="/form-article.php<?= $idArticle ? "?id=$idArticle" : '' ?>" method="POST">
                     <div class="form-control">
                         <label for="title">Title</label>
-                        <input type="text" name="title" id="title" value=<?= $title ?? '' ?>>
+                        <input type="text" name="title" id="title" value="<?= $title ?? '' ?>">
                         <?php if($errors['title']) : ?>
                             <p class="text-error"><?= $errors['title'] ?></p>
                         <?php endif ; ?>
@@ -97,7 +120,7 @@
 
                     <div class="form-control">
                         <label for="image">Image</label>
-                        <input type="text" name="image" id="image" value=<?= $image ?? '' ?>>
+                        <input type="text" name="image" id="image" value="<?= $image ?? '' ?>">
                         <?php if($errors['title']) : ?>
                             <p class="text-error"><?= $errors['title'] ?></p>
                         <?php endif ; ?>
@@ -105,10 +128,10 @@
 
                     <div class="form-control">
                         <label for="category">Categorie</label>
-                        <select name="category" id="category" value=<?= $category ?? '' ?>>
-                            <option value="technologie">Technologie</option>
-                            <option value="nature">Nature</option>
-                            <option value="politique">Politique</option>
+                        <select name="category" id="category" value="<?= $category ?? '' ?>">
+                            <option <?= $category === 'technologie' ? 'selected': '' ?> value="technologie">Technologie</option>
+                            <option <?= $category === 'nature' ? 'selected': '' ?> value="nature">Nature</option>
+                            <option <?= $category === 'politique' ? 'selected': '' ?> value="politique">Politique</option>
                         </select>
                         <?php if($errors['title']) : ?>
                             <p class="text-error"><?= $errors['title'] ?></p>
@@ -125,7 +148,7 @@
 
                     <div class="form-action">
                         <a href="/" class="btn btn-secondary">Annuler</a>
-                        <button class="btn btn-primary" type="submit">Sauvegarder</button>
+                        <button class="btn btn-primary" type="submit"><?= $idArticle ? 'Sauvegarder' : 'Poster' ?></button>
                     </div>
                 </form>
             </div>
