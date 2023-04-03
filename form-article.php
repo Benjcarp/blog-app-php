@@ -1,17 +1,15 @@
 <?php
+
+    /**
+     * @var ArticleDAO
+     */
+    $articleDAO = require_once './database/models/articleDAO.php';
+
     const ERROR_REQUIRED = "Veuillez renseigner ce champ";
     const ERROR_TITLE_TOO_SHORT = "Le titre est trop court";
     const ERROR_CONTENT_TOO_SHORT = "L'article est trop court";
     const ERROR_IMAGE_URL = "L'image doit etre une url valide";
 
-    $pdo = require_once('./database/database.php');
-    $statementCreateOne = $pdo->prepare(
-        'INSERT INTO article (title, category, content, image) VALUES (:title, :category, :content, :image)'
-    );
-    $statementReadOne = $pdo->prepare('SELECT * FROM article WHERE id=:id');
-    $statementUpdateOne = $pdo->prepare(
-        'UPDATE article SET title=:title, category=:category, content=:content, image=:image WHERE id=:id'
-    );
 
     $articles = [];
     $category = '';
@@ -28,14 +26,11 @@
     $idArticle = $_GET['id'] ?? '';
 
     if($idArticle) {
-        $statementReadOne->bindValue(':id', $idArticle );
-        $statementReadOne->execute();
-        $article = $statementReadOne->fetch();
-
+        $article = $articleDAO->getOne($idArticle);
         $title = $article['title'];
-        $image = $article['image'];
         $category = $article['category'];
         $content = $article['content'];
+        $image = $article['image'];
     }
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,18 +79,14 @@
                 $article['category'] = $category;
                 $article['content'] = $content;
 
-                $statementUpdateOne->bindValue(':title', $article['title']);
-                $statementUpdateOne->bindValue(':category', $article['category']);
-                $statementUpdateOne->bindValue(':content', $article['content']);
-                $statementUpdateOne->bindValue(':image', $article['image']);
-                $statementUpdateOne->bindValue(':id', $idArticle);
-                $statementUpdateOne->execute();
+                $articleDAO->updateOne($article, $idArticle);
             } else {
-                $statementCreateOne->bindValue(':title', $title);
-                $statementCreateOne->bindValue(':category', $category);
-                $statementCreateOne->bindValue(':content', $content);
-                $statementCreateOne->bindValue(':image', $image);
-                $statementCreateOne->execute();
+                $articleDAO->createOne([
+                    'title' => $title,
+                    'category' => $category,
+                    'content' => $content,
+                    'image' => $image,
+                ]);
             }
             header('Location: /');
         }
