@@ -1,19 +1,16 @@
 <?php
-
-    /**
-     * @var ArticleDAO
-     */
-    $articleDAO = require_once './database/models/articleDAO.php';
-
     const ERROR_REQUIRED = "Veuillez renseigner ce champ";
     const ERROR_TITLE_TOO_SHORT = "Le titre est trop court";
     const ERROR_CONTENT_TOO_SHORT = "L'article est trop court";
     const ERROR_IMAGE_URL = "L'image doit etre une url valide";
 
+    /**
+     * @var ArticleDAO 
+     */
+    $articleDAO = require_once './database/models/ArticleDAO.php';
 
     $articles = [];
     $category = '';
-
 
     $errors = [
         'title' => '',
@@ -24,13 +21,16 @@
 
     $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $idArticle = $_GET['id'] ?? '';
+    // si vous avez un idArticle vous etes en mode edition, sinon on est en mode creation
 
+    // EN mode edition on recupere notre article
     if($idArticle) {
         $article = $articleDAO->getOne($idArticle);
+
         $title = $article['title'];
+        $image = $article['image'];
         $category = $article['category'];
         $content = $article['content'];
-        $image = $article['image'];
     }
 
     if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -70,17 +70,21 @@
         } else if (mb_strlen($content) < 5) {
             $errors['content'] = ERROR_CONTENT_TOO_SHORT;
         }
+
         if(empty(array_filter($errors, fn ($error) => $error !== ''))) {
             // mon formulaire est valide
 
             if($idArticle) {
+                // mode edition
                 $article['title'] = $title;
                 $article['image'] = $image;
                 $article['category'] = $category;
                 $article['content'] = $content;
 
                 $articleDAO->updateOne($article, $idArticle);
+                
             } else {
+                // mode creation
                 $articleDAO->createOne([
                     'title' => $title,
                     'category' => $category,
@@ -89,9 +93,9 @@
                 ]);
             }
             header('Location: /');
+            
         }
     }
-
 ?>
 
 
@@ -107,11 +111,11 @@
         <?php require_once "includes/header.php" ?>
         <div class="content">
             <div class="block p-20 form-container">
-                <h1><?= $idArticle ? 'Editer': 'Ajouter' ?> un article</h1>
+                <h1><?= $idArticle ? 'Editer' : 'Ajouter' ?> un article</h1>
                 <form action="/form-article.php<?= $idArticle ? "?id=$idArticle" : '' ?>" method="POST">
                     <div class="form-control">
                         <label for="title">Title</label>
-                        <input type="text" name="title" id="title" value="<?= $title ?? '' ?>">
+                        <input type="text" name="title" id="title" value="<?= $title ?? '' ?>" >
                         <?php if($errors['title']) : ?>
                             <p class="text-error"><?= $errors['title'] ?></p>
                         <?php endif ; ?>
@@ -119,29 +123,29 @@
 
                     <div class="form-control">
                         <label for="image">Image</label>
-                        <input type="text" name="image" id="image" value="<?= $image ?? '' ?>">
-                        <?php if($errors['title']) : ?>
-                            <p class="text-error"><?= $errors['title'] ?></p>
+                        <input type="text" name="image" id="image" value="<?= $image ?? '' ?>" >
+                        <?php if($errors['image']) : ?>
+                            <p class="text-error"><?= $errors['image'] ?></p>
                         <?php endif ; ?>
                     </div>
 
                     <div class="form-control">
                         <label for="category">Categorie</label>
                         <select name="category" id="category" value="<?= $category ?? '' ?>">
-                            <option <?= $category === 'technologie' ? 'selected': '' ?> value="technologie">Technologie</option>
-                            <option <?= $category === 'nature' ? 'selected': '' ?> value="nature">Nature</option>
-                            <option <?= $category === 'politique' ? 'selected': '' ?> value="politique">Politique</option>
+                            <option <?= !$category || $category === 'technologie' ? 'selected' : '' ?> value="technologie">Technologie</option>
+                            <option <?= $category === 'nature' ? 'selected' : '' ?> value="nature">Nature</option>
+                            <option <?= $category === 'politique' ? 'selected' : '' ?> value="politique">Politique</option>
                         </select>
-                        <?php if($errors['title']) : ?>
-                            <p class="text-error"><?= $errors['title'] ?></p>
+                        <?php if($errors['category']) : ?>
+                            <p class="text-error"><?= $errors['category'] ?></p>
                         <?php endif ; ?>
                     </div>
 
                     <div class="form-control">
                         <label for="content">Contenu</label>
                         <textarea name="content"><?= $content ?? '' ?></textarea>
-                        <?php if($errors['title']) : ?>
-                            <p class="text-error"><?= $errors['title'] ?></p>
+                        <?php if($errors['content']) : ?>
+                            <p class="text-error"><?= $errors['content'] ?></p>
                         <?php endif ; ?>
                     </div>
 

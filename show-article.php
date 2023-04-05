@@ -1,16 +1,16 @@
 <?php
-$articleDAO = require_once './database/models/articleDAO.php';
-$articles = [];
-$_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-$idArticle = $_GET['id'] ?? '';
+    $articleDAO = require_once './database/models/ArticleDAO.php';
 
-if(!$idArticle) {
-    header('Location: /');
-} else {
+    $articles = [];
+    $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $idArticle = $_GET['id'] ?? '';
+
+    if(!$idArticle){
+        header('Location: /');
+    } else {
         $article = $articleDAO->getOne($idArticle);
     }
-
- ?>
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,13 +25,13 @@ if(!$idArticle) {
         <div class="content">
             <div class="article-container">
                 <a href="/" class="article-back">< Retour a la liste des articles</a>
-                <div class="article-cover-img" style="background-image: url(<?= $article['image'] ?>)"></div>
+                <div class="article-cover-img" style="background-image: url(<?= $article['image'] ?>);" ></div>
                 <h1 class="article-title"><?= $article['title'] ?></h1>
                 <div class="separator"></div>
                 <p class="article-content"><?= $article['content'] ?></p>
                 <div class="action">
-                    <a class="btn btn-primary" href="/form-article.php?id=<?= $article['id'] ?>">Editer</a>
-                    <a class="btn btn-secondary" href="/delete-article.php?id=<?= $article['id'] ?>">Supprimer</a>
+                    <a href="/form-article.php?id=<?= $article['id'] ?>" class="btn btn-primary">Editer l'article</a>
+                    <a href="/delete-article.php?id=<?= $article['id'] ?>" class="btn btn-secondary">Supprimer</a>
                 </div>
             </div>
         </div>

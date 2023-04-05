@@ -33,14 +33,14 @@ h1 {
     margin-bottom: 1rem;
 }
 
-h2 {
-    font-size: 1.4rem;
-    margin: 2rem .5rem;
-}
-
 ul {
     padding: 0;
     list-style-type: none;
+}
+
+h2 {
+    font-size: 1rem;
+    margin: 2rem .5rem;
 }
 
 a {
@@ -223,13 +223,14 @@ footer p {
 
 /* content */
 .content {
-    max-width: 100rem;
+    max-width: 120rem;
     width: 100%;
     flex: 1;
     display: flex;
     flex-flow: column;
     align-self: center;
     align-items: center;
+    justify-content: center;
     padding: 2rem 0;
 }
 

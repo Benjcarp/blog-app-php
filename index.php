@@ -1,6 +1,6 @@
 <?php
 
-    $articleDAO = require_once './database/models/articleDAO.php';
+    $articleDAO = require_once './database/models/ArticleDAO.php';
     $articles = $articleDAO->getAll();
 
     $categories = [];
@@ -18,20 +18,18 @@
                 $acc[$cat] = 1;
             }
             return $acc;
-        }, []);
-        
+        }, []); // {technologie: 3, nature: 3, politique: 3}
+
         $articlesPerCategory = array_reduce($articles, function ($acc, $article) {
             if(isset($acc[$article['category']])) {
                 $acc[$article['category']] = [...$acc[$article['category']], $article];
             } else {
-                $acc[$article['category']] = [$article];
+                $acc[$article['category']] = [ $article];
             }
 
             return $acc;
-        }, []);
+        }, []); //{technologie: [{article1}, {article2}, {article3}], nature: [{article1}, {article2}, {article3}]}
     }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -47,15 +45,19 @@
         <div class="content">
             <div class="newsfeed-container">
                 <ul class="category-container">
-                    <li class=<?= $selectedCategory ? '': 'cat-active' ?>><a href="/">Tous les articles <span class="small">(<?= count($articles)?>)</span></a></li>
+                    <li class=<?= $selectedCategory ? '' : 'cat-active' ?> ><a href="/">
+                        Tous les articles <span class="small">( <?= count($articles) ?> )</span>
+                    </a></li>
                     <?php foreach($categories as $category => $nbArticles) : ?>
-                        <li class=<?= $selectedCategory === $category ? 'cat-active': '' ?>><a href="/?cat=<?= $category ?>"><?= $category ?><span class="small">(<?= $nbArticles ?>)</span></a></li>
-                    <?php endforeach ?>
+                        <li class=<?= $selectedCategory === $category ? 'cat-active' : '' ?> ><a href="/?cat=<?= $category ?>">
+                            <?= $category ?> <span class="small">( <?= $nbArticles ?> )</span>
+                        </a></li>
+                    <?php endforeach; ?>
                 </ul>
                 <div class="feed-container">
                     <?php if(!$selectedCategory) : ?>
                         <?php foreach ($categories as $category => $num) : ?>
-                            <h1 class="p-10"><?= $category ?> </h1>
+                            <h1 class="p-10"><?= $category ?></h1>
                             <div class="articles-container">
                                 <?php foreach($articlesPerCategory[$category] as $article) :  ?>
                                     <a href="/show-article.php?id=<?= $article['id'] ?>" class="article block">
@@ -81,7 +83,7 @@
                         </div>
                     <?php endif; ?>
                 </div>
-            </div>   
+            </div>
         </div>
         <?php require_once "includes/footer.php" ?>
     </div>
