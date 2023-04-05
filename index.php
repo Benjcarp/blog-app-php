@@ -1,6 +1,10 @@
 <?php
+    require __DIR__.'/database/database.php';
+    
+    $authDAO = require './database/models/authDAO.php';
+    $currentUser = $authDAO->isLoggedIn();
 
-    $articleDAO = require_once './database/models/ArticleDAO.php';
+    $articleDAO = require './database/models/ArticleDAO.php';
     $articles = $articleDAO->getAll();
 
     $categories = [];

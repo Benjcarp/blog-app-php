@@ -1,18 +1,27 @@
 <?php
 
-    /**
-     * @var ArticleDAO 
-     */
-    $articleDAO = require_once './database/models/ArticleDAO.php';
-
-    $articles = [];
-
-    $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $idArticle = $_GET['id'] ?? '';
-
+    $authDAO = require './database/models/authDAO.php';
+    $currentUser = $authDAO->isLoggedIn();
+    require __DIR__.'/database/database.php';
     
-    if($idArticle) {
-        $articleDAO->deleteOne($idArticle);
+    if(!$currentUser) {
+        header('Location: /auth-login.php');
+    }else {
+                /**
+         * @var ArticleDAO 
+         */
+        $articleDAO = require_once './database/models/ArticleDAO.php';
+
+        $articles = [];
+
+        $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $idArticle = $_GET['id'] ?? '';
+
+        
+        if($idArticle) {
+            $articleDAO->deleteOne($idArticle);
+        }
+
+        header('Location: /');
     }
 
-    header('Location: /');

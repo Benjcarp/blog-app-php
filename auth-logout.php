@@ -1,21 +1,12 @@
 <?php
 
-?>
+    require __DIR__.'/database/database.php';
+    $authDAO = require './database/models/authDAO.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <?php require_once 'includes/head.php' ?>
-    <link rel="stylesheet" href="public/css/profile.css">
-    <title>Login</title>
-</head>
-<body>
-    <div class="container">
-        <?php require_once 'includes/header.php' ?>
-        <div class="content">
+    $sessionId = $_COOKIE["session"];
+    if($sessionId) {
+        $authDAO->logout($sessionId);
+        setcookie('session', '', time() - 1);
+        header('Location: /auth-login.php');
+    }
 
-        </div>
-        <?php require_once 'includes/footer.php' ?>
-    </div>
-</body>
-</html>

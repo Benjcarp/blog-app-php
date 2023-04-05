@@ -4,10 +4,18 @@
     const ERROR_CONTENT_TOO_SHORT = "L'article est trop court";
     const ERROR_IMAGE_URL = "L'image doit etre une url valide";
 
+    $authDAO = require './database/models/authDAO.php';
+    $currentUser = $authDAO->isLoggedIn();
+    $articleDAO = require_once './database/models/ArticleDAO.php';
+    require __DIR__.'/database/database.php';
+
+    if(!$currentUser) {
+        header('Location: /auth-login.php');
+    }
+
     /**
      * @var ArticleDAO 
      */
-    $articleDAO = require_once './database/models/ArticleDAO.php';
 
     $articles = [];
     $category = '';
