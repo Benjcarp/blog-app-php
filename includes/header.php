@@ -11,8 +11,8 @@
                 <a href="/form-article.php">Ecrire un article</a>
             </li>
 
-            <li class="<?= $_SERVER['REQUEST_URI'] === '/profile.php' ? 'active' : '' ?>">
-                <a href="/profile.php">Ma page</a>
+            <li class="<?= $_SERVER['REQUEST_URI'] === '/profile.php' ? 'active' : '' ?> header-profile">
+                <a href="/profile.php"><?= $currentUser['firstname'][0].$currentUser['lastname'][0] ?></a>
             </li>
 
             <li class="<?= $_SERVER['REQUEST_URI'] === '/auth-logout.php' ? 'active' : '' ?>">
