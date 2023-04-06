@@ -1,21 +1,22 @@
 <?php
-    const ERROR_REQUIRED = "Veuillez renseigner ce champ";
-    const ERROR_TITLE_TOO_SHORT = "Le titre est trop court";
-    const ERROR_CONTENT_TOO_SHORT = "L'article est trop court";
-    const ERROR_IMAGE_URL = "L'image doit etre une url valide";
 
-    $authDAO = require './database/models/authDAO.php';
-    $currentUser = $authDAO->isLoggedIn();
-    $articleDAO = require_once './database/models/ArticleDAO.php';
     require __DIR__.'/database/database.php';
+    $authDAO = require './database/models/AuthDAO.php';
+    $currentUser = $authDAO->isLoggedIn();
 
     if(!$currentUser) {
         header('Location: /auth-login.php');
     }
 
+    const ERROR_REQUIRED = "Veuillez renseigner ce champ";
+    const ERROR_TITLE_TOO_SHORT = "Le titre est trop court";
+    const ERROR_CONTENT_TOO_SHORT = "L'article est trop court";
+    const ERROR_IMAGE_URL = "L'image doit etre une url valide";
+
     /**
      * @var ArticleDAO 
      */
+    $articleDAO = require_once './database/models/ArticleDAO.php';
 
     $articles = [];
     $category = '';
@@ -88,6 +89,7 @@
                 $article['image'] = $image;
                 $article['category'] = $category;
                 $article['content'] = $content;
+                $article['author'] = $currentUser['id'];
 
                 $articleDAO->updateOne($article, $idArticle);
                 
@@ -98,6 +100,7 @@
                     'category' => $category,
                     'content' => $content,
                     'image' => $image,
+                    'author' => $currentUser['id']
                 ]);
             }
             header('Location: /');

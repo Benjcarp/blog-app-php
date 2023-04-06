@@ -1,13 +1,12 @@
 <?php
-
-    $authDAO = require './database/models/authDAO.php';
-    $currentUser = $authDAO->isLoggedIn();
     require __DIR__.'/database/database.php';
+    $authDAO = require './database/models/AuthDAO.php';
+    $currentUser = $authDAO->isLoggedIn();
     
     if(!$currentUser) {
         header('Location: /auth-login.php');
-    }else {
-                /**
+    } else {
+        /**
          * @var ArticleDAO 
          */
         $articleDAO = require_once './database/models/ArticleDAO.php';
@@ -25,3 +24,4 @@
         header('Location: /');
     }
 
+    

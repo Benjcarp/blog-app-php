@@ -1,8 +1,9 @@
 <?php
-    $articleDAO = require_once './database/models/ArticleDAO.php';
     require __DIR__.'/database/database.php';
-    $authDAO = require './database/models/authDAO.php';
+    $authDAO = require './database/models/AuthDAO.php';
     $currentUser = $authDAO->isLoggedIn();
+
+    $articleDAO = require_once './database/models/ArticleDAO.php';
 
     $articles = [];
     $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -32,10 +33,13 @@
                 <h1 class="article-title"><?= $article['title'] ?></h1>
                 <div class="separator"></div>
                 <p class="article-content"><?= $article['content'] ?></p>
-                <div class="action">
-                    <a href="/form-article.php?id=<?= $article['id'] ?>" class="btn btn-primary">Editer l'article</a>
-                    <a href="/delete-article.php?id=<?= $article['id'] ?>" class="btn btn-secondary">Supprimer</a>
-                </div>
+                <p class="article-author"><?= $article['firstname'].' '.$article['lastname'] ?></p>
+                <?php if($currentUser && $currentUser['id'] === $article['author']) : ?>
+                    <div class="action">
+                        <a href="/form-article.php?id=<?= $article['id'] ?>" class="btn btn-primary">Editer l'article</a>
+                        <a href="/delete-article.php?id=<?= $article['id'] ?>" class="btn btn-secondary">Supprimer</a>
+                    </div>
+                <?php  endif; ?>
             </div>
         </div>
         <?php require_once 'includes/footer.php' ?>

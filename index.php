@@ -1,8 +1,12 @@
 <?php
+
     require __DIR__.'/database/database.php';
-    
-    $authDAO = require './database/models/authDAO.php';
+    /**
+     * @var AuthDAO
+     */
+    $authDAO = require './database/models/AuthDAO.php';
     $currentUser = $authDAO->isLoggedIn();
+    var_dump($currentUser);
 
     $articleDAO = require './database/models/ArticleDAO.php';
     $articles = $articleDAO->getAll();
@@ -69,6 +73,9 @@
                                             <div class="img-container" style="background-image: url(<?= $article['image'] ?>)"  ></div>
                                         </div>
                                         <h2><?= $article['title'] ?></h2>
+                                        <div class="article-author">
+                                            <p><?= $article['firstname'].' '.$article['lastname'] ?></p>
+                                        </div>
                                     </a>
                                 <?php endforeach; ?>
                             </div>
@@ -82,6 +89,9 @@
                                         <div class="img-container" style="background-image: url(<?= $article['image'] ?>)"  ></div>
                                     </div>
                                     <h2><?= $article['title'] ?></h2>
+                                    <div class="article-author">
+                                        <p><?= $article['firstname'].''.$article['lastname'] ?></p>
+                                    </div>
                                 </a>
                             <?php endforeach; ?>
                         </div>

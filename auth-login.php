@@ -1,10 +1,10 @@
 <?php
-    require __DIR__.'/database/database.php';
 
+    require __DIR__.'/database/database.php';
     /**
      * @var AuthDAO
      */
-    $authDAO = require_once './database/models/AuthDAO.php';
+    $authDAO = require './database/models/AuthDAO.php';
 
     const ERROR_REQUIRED = "Veuillez renseigner ce champ";
     const ERROR_EMAIL_INVALID = "L'email n'est pas valide";
@@ -37,7 +37,6 @@
         if(empty(array_filter($errors, fn ($e) => $e !== ''))) {
             // logger l'utilisateur
             $user = $authDAO->getUser($email);
-
             if(!$user) {
                 $errors['email'] = ERROR_EMAIL_UNKNOWN;
             } else {

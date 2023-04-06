@@ -6,15 +6,15 @@
     <a href="/" class="logo">BLOG APP</a>
     <ul class="header-menu">
 
-        <?php if($currentUser): ?>
+        <?php if($currentUser) : ?>
             <li class="<?= $_SERVER['REQUEST_URI'] === '/form-article.php' ? 'active' : '' ?>">
                 <a href="/form-article.php">Ecrire un article</a>
             </li>
 
             <li class="<?= $_SERVER['REQUEST_URI'] === '/profile.php' ? 'active' : '' ?>">
-                <a href="/auth-logout.php">Ma page</a>
+                <a href="/profile.php">Ma page</a>
             </li>
-            
+
             <li class="<?= $_SERVER['REQUEST_URI'] === '/auth-logout.php' ? 'active' : '' ?>">
                 <a href="/auth-logout.php">Logout</a>
             </li>
@@ -22,14 +22,12 @@
             <li class="<?= $_SERVER['REQUEST_URI'] === '/auth-login.php' ? 'active' : '' ?>">
                 <a href="/auth-login.php">Login</a>
             </li>
-
+            
             <li class="<?= $_SERVER['REQUEST_URI'] === '/auth-register.php' ? 'active' : '' ?>">
                 <a href="/auth-register.php">Inscription</a>
             </li>
         <?php endif; ?>
 
-        
-        
         
         
     </ul>
