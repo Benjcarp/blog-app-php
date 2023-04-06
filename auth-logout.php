@@ -11,5 +11,6 @@
         // supprimer la session de la bdd
         $authDAO->logout($sessionId);
         setcookie('session', '', time() - 1);
+        setcookie('signature', '', time() - 1);
         header('Location: /auth-login.php');
     }
